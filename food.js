@@ -21,7 +21,7 @@ class Food {
       this.foodMesh = BABYLON.Mesh.CreateBox("box", 2,scene);
       this.foodMesh.position.x= Math.random()*120-60;
       this.foodMesh.position.z= Math.random()*120-60;
-      this.foodMesh.position.y= 10;
+      //this.foodMesh.position.y= 5;
       this.foodMesh.material=myMaterial ;
      this.food.push(this.foodMesh); 
     }
@@ -38,7 +38,7 @@ class Food {
     this.foodMesh =  BABYLON.Mesh.CreateBox("box", 2,scene);
     this.foodMesh.position.x= Math.random()*120-60;
     this.foodMesh.position.z= Math.random()*120-60;
-    this.foodMesh.position.y= 10;
+    //this.foodMesh.position.y= 5;
     this.foodMesh.material=myMaterial ;
    this.food.push(this.foodMesh);    
     

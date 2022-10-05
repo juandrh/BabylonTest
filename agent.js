@@ -24,7 +24,7 @@ class Agent {
 
     this.agentMesh.position.x= Math.random()*120-60;
     this.agentMesh.position.z= Math.random()*120-60;
-    this.agentMesh.position.y= 10;
+    //this.agentMesh.position.y= 5;
     this.health = 200; // Life timer
     this.xoff = Math.random()*1000; // For perlin noise
     this.zoff = Math.random()*1000; 
