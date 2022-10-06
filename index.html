@@ -72,12 +72,11 @@
         var scene = new BABYLON.Scene(engine);
 
         // This creates and positions a free camera (non-mesh)
-        //var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 15, -30), scene);
         var camera = new BABYLON.ArcRotateCamera(
           "Camera",
-          0,
-          0.8,
-          200,
+          0.0,
+          0.7,
+          150,
           BABYLON.Vector3.Zero(),
           scene
         );
@@ -118,51 +117,8 @@
         skyboxMaterial.turbidity = 40;
         skyboxMaterial.cameraOffset.y = 50;
 
-        /* // Ground
-	var groundTexture = new BABYLON.Texture("./textures/sand.jpg", scene);
-	groundTexture.vScale = groundTexture.uScale = 4.0;
-	
-	var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-	groundMaterial.diffuseTexture = groundTexture;
-	
-	var ground = BABYLON.Mesh.CreateGround("ground", 1024, 1024, 32, scene, false);
-	ground.position.y = -1;
-	ground.material = groundMaterial;
-		
-	// Water
-	var waterMesh = BABYLON.Mesh.CreateGround("waterMesh", 1024, 1024, 32, scene, false);
-	var water = new BABYLON.WaterMaterial("water", scene, new BABYLON.Vector2(1024, 1024));
-	water.backFaceCulling = true;
-	water.bumpTexture = new BABYLON.Texture("./textures/waterbump.png", scene);
-	water.windForce = -5;
-	water.waveHeight = 0.05;
-	water.bumpHeight = 0.01;
-	water.waveLength = 0.05;
-	water.colorBlendFactor = 0;
-	water.addToRenderList(skybox);
-	water.addToRenderList(ground);
-	waterMesh.material = water;  */
-
-        // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-        /* var light = new BABYLON.DirectionalLight(
-          "DirectionalLight",
-          new BABYLON.Vector3(0.5, -0.9, -0.5),
-          scene
-        );
-        light.intensity = 0.4; */
-        /*       var light2 = new BABYLON.PointLight("light", new BABYLON.Vector3(-50, 5, -20), scene);
-	light2.diffuse = new BABYLON.Color3(1, 1, 1);
-	  //light2.specular = new BABYLON.Color3(0, 1, 0);       
-        light2.intensity = 0.3;
-        var light3 = new BABYLON.PointLight("light", new BABYLON.Vector3(30, 5, 30), scene);
-	light3.diffuse = new BABYLON.Color3(1, 1, 1);
-	  //light3.specular = new BABYLON.Color3(0, 1, 0);
-        // Default intensity is 1. Let's dim the light a small amount
-        light3.intensity = 0.3;   */
-
-        // Our built-in 'ground' shape.
+        // Ground
         const groundSize = 150;
-
         var groundMat = new BABYLON.StandardMaterial("groundMat", scene);
         groundMat.ambientTexture = new BABYLON.Texture(
           "textures/th5jfjufw_2K_Albedo.jpg",
@@ -176,7 +132,6 @@
         groundMat.ambientTexture.vScale = 4.0;
         groundMat.normalTexture.uScale = 4.0;
         groundMat.normalTexture.vScale = 4.0;
-        //groundMat.bumpTexture = new BABYLON.Texture("assets/cerasmic_14_basepattern-2K.png", scene);
         var ground = BABYLON.MeshBuilder.CreateGround(
           "ground",
           { width: groundSize, height: groundSize },
@@ -184,24 +139,29 @@
         );
         ground.material = groundMat;
 
+        // Food and agents creation
         var food = new Food(10);
-
-        agents = []; // An array for all creatures
-        for (let i = 0; i < 40; i++) {
-          agents.push(new Agent(0, 0, 0, 0,0,0,0));
+        agents = [];
+        for (let i = 0; i < 50; i++) {
+          agents.push(new Agent(0, 0, 0, 0, 0, 0, 0));
         }
+
+        // GUI
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        var text1 = new BABYLON.GUI.TextBlock();        
+        text1.color = "white";
+        text1.fontSize = 24;        
+        text1.textHorizontalAlignment="left" ;          
+        text1.text = "50";   
+        advancedTexture.addControl(text1);    
+
         // --- loop --------------------------------
         // Code in this function will run ~60 times per second
         scene.registerBeforeRender(function () {
-          /* for (let i = 0; i < food.getFoodLength(); i++) {
-            if (Math.random() < 0.01) {
-              food.eatFood(i);
-            }
-            if (Math.random() < 0.01) {
-              food.addFood();
-            }
-          } */
-
+          console.log("Num agents:",agents.length);
+          text1.text = agents.length;   
+          advancedTexture.addControl(text1); 
+          // update agents
           for (let i = 0; i < agents.length; i++) {
             agents[i].update();
             agents[i].borders();
@@ -229,21 +189,19 @@
                   agents[j].agentMesh.position.z
                 );
                 let d = BABYLON.Vector2.Distance(agentPosition, agent2Position);
-                if (d < agents[i].getRadius()) {
-                  // if they are close each other
-
+                if (d < agents[i].getRadius()) { // if they are close each other              
                   if (
-                    Math.abs(agents[i].getRadius() - agents[j].getRadius()) < 1.5
-                  ) {
-                    // if they are similar in size they merge
+                    Math.abs(agents[i].getRadius() - agents[j].getRadius()) <
+                    1.5
+                  ) {// if they are similar in size they merge                    
                     agents[i].changeHealth(-5000);
                     agents[j].changeHealth(-5000);
-                    var colorR1=agents[i].getColorR();
-                    var colorG1=agents[i].getColorG();
-                    var colorB1=agents[i].getColorB();
-                    var colorR2=agents[j].getColorR();
-                    var colorG2=agents[j].getColorG();
-                    var colorB2=agents[j].getColorB();
+                    var colorR1 = agents[i].getColorR();
+                    var colorG1 = agents[i].getColorG();
+                    var colorB1 = agents[i].getColorB();
+                    var colorR2 = agents[j].getColorR();
+                    var colorG2 = agents[j].getColorG();
+                    var colorB2 = agents[j].getColorB();
                     agents.push(
                       new Agent(
                         agents[i].agentMesh.position.x +
@@ -252,13 +210,12 @@
                           agents[j].agentMesh.position.z,
                         agents[i].getRadius(),
                         agents[j].getRadius(),
-                        (colorR1+colorR2)/2,
-                        (colorG1+colorG2)/2,
-                        (colorB1+colorB2)/2
+                        (colorR1 + colorR2) / 2,
+                        (colorG1 + colorG2) / 2,
+                        (colorB1 + colorB2) / 2
                       )
                     );
-                  } else {
-                    // if not: destroy depending on kinetic energy of each one
+                  } else {// if not: destroy depending on kinetic energy of each one                    
                     if (
                       agents[i].getRadius() *
                         agents[i].getVelocity() *
@@ -276,7 +233,6 @@
               }
             }
 
-            // -- end eat food
             // Is dead??
             if (agents[i].isDead()) {
               agents[i].agentMesh.dispose();
@@ -284,7 +240,7 @@
             }
           }
         });
-        // -------------------------
+   
         return scene;
       };
       window.initFunction = async function () {

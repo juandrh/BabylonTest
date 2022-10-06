@@ -1,16 +1,14 @@
+// Adaptation of:
 // The Nature of Code
 // Daniel Shiffman
 // http://natureofcode.com
-
 // Evolution EcoSystem
-
 // A collection of food in the world
 
 class Food {
 
 
   constructor(num) {
-    // Start with some food
     var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
     myMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0);
     this.food = [];
