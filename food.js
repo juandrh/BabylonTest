@@ -8,58 +8,51 @@
 
 class Food {
 
-  
+
   constructor(num) {
     // Start with some food
     var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
-      myMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0);
-      //myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
-     // myMaterial.emissiveColor = new BABYLON.Color3(0.0, 0.58, 0.02);
-     // myMaterial.ambientColor = new BABYLON.Color3(0.0, 0.58, 0.02);
+    myMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0);
     this.food = [];
     for (let i = 0; i < num; i++) {
-      this.foodMesh = BABYLON.Mesh.CreateBox("box", 2,scene);
-      this.foodMesh.position.x= Math.random()*120-60;
-      this.foodMesh.position.z= Math.random()*120-60;
+      this.foodMesh = BABYLON.Mesh.CreateBox("box", 2, scene);
+      this.foodMesh.position.x = Math.random() * 120 - 60;
+      this.foodMesh.position.z = Math.random() * 120 - 60;
       //this.foodMesh.position.y= 5;
-      this.foodMesh.material=myMaterial ;
-     this.food.push(this.foodMesh); 
+      this.foodMesh.material = myMaterial;
+      this.food.push(this.foodMesh);
     }
   }
 
-   // Add new food item
-   addFood() {
+  // Add new food item
+  addFood() {
     var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
-
     myMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0);
-      //myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
-     // myMaterial.emissiveColor = new BABYLON.Color3(0.0, 0.58, 0.02);
-    //  myMaterial.ambientColor = new BABYLON.Color3(0.0, 0.58, 0.02);
-    this.foodMesh =  BABYLON.Mesh.CreateBox("box", 2,scene);
-    this.foodMesh.position.x= Math.random()*120-60;
-    this.foodMesh.position.z= Math.random()*120-60;
+    this.foodMesh = BABYLON.Mesh.CreateBox("box", 2, scene);
+    this.foodMesh.position.x = Math.random() * 120 - 60;
+    this.foodMesh.position.z = Math.random() * 120 - 60;
     //this.foodMesh.position.y= 5;
-    this.foodMesh.material=myMaterial ;
-   this.food.push(this.foodMesh);    
-    
-  } 
+    this.foodMesh.material = myMaterial;
+    this.food.push(this.foodMesh);
 
-  eatFood(i){
+  }
+
+  eatFood(i) {
     this.food[i].dispose();
-    this.food.splice(i,1);
+    this.food.splice(i, 1);
     this.addFood();
   }
-  
+
   // Return the list of food
   getFood() {
     return this.food;
-  } 
+  }
 
-  getFoodLength(){
+  getFoodLength() {
     return this.food.length;
   }
 
-  getFoodPosition(i){
-    return new BABYLON.Vector2(this.food[i].position.x,this.food[i].position.z);
+  getFoodPosition(i) {
+    return new BABYLON.Vector2(this.food[i].position.x, this.food[i].position.z);
   }
 }

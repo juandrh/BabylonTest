@@ -94,7 +94,18 @@
           new BABYLON.Vector3(0, 1, 0),
           scene
         );
-        light.intensity = 0.5;
+
+        light.intensity = 0.3;
+
+        var dirLight = new BABYLON.DirectionalLight(
+          "sun",
+          new BABYLON.Vector3(0, -1, 0),
+          scene
+        );
+        dirLight.position = new BABYLON.Vector3(-1500, 150, -1500);
+        dirLight.direction = new BABYLON.Vector3(0.0, -1, -0.5);
+        dirLight.specular = BABYLON.Color3.Black();
+        dirLight.intensity = 0.5;
         // Sky material
         var skyboxMaterial = new BABYLON.SkyMaterial("skyMaterial", scene);
         skyboxMaterial.backFaceCulling = false;
@@ -107,8 +118,7 @@
         skyboxMaterial.turbidity = 40;
         skyboxMaterial.cameraOffset.y = 50;
 
-        		
-	/* // Ground
+        /* // Ground
 	var groundTexture = new BABYLON.Texture("./textures/sand.jpg", scene);
 	groundTexture.vScale = groundTexture.uScale = 4.0;
 	
@@ -140,7 +150,7 @@
           scene
         );
         light.intensity = 0.4; */
-   /*       var light2 = new BABYLON.PointLight("light", new BABYLON.Vector3(-50, 5, -20), scene);
+        /*       var light2 = new BABYLON.PointLight("light", new BABYLON.Vector3(-50, 5, -20), scene);
 	light2.diffuse = new BABYLON.Color3(1, 1, 1);
 	  //light2.specular = new BABYLON.Color3(0, 1, 0);       
         light2.intensity = 0.3;
@@ -153,32 +163,32 @@
         // Our built-in 'ground' shape.
         const groundSize = 150;
 
-         var groundMat = new BABYLON.StandardMaterial("groundMat", scene);
+        var groundMat = new BABYLON.StandardMaterial("groundMat", scene);
         groundMat.ambientTexture = new BABYLON.Texture(
-          "textures/ceramic_14_basecolor-2K.png",
+          "textures/Limestone_1_basecolor-2K.png",
           scene
         );
-        groundMat.diffuseTexture = new BABYLON.Texture(
-          "textures/ceramic_14_basecolor-2K.png",
+        groundMat.normalTexture = new BABYLON.Texture(
+          "textures/Limestone_1_normal-2K.png",
           scene
         );
         groundMat.ambientTexture.uScale = 6.0;
         groundMat.ambientTexture.vScale = 6.0;
-        groundMat.diffuseTexture.uScale = 6.0;
-        groundMat.diffuseTexture.vScale = 6.0;
+        groundMat.normalTexture.uScale = 6.0;
+        groundMat.normalTexture.vScale = 6.0;
         //groundMat.bumpTexture = new BABYLON.Texture("assets/cerasmic_14_basepattern-2K.png", scene);
         var ground = BABYLON.MeshBuilder.CreateGround(
           "ground",
           { width: groundSize, height: groundSize },
           scene
         );
-        ground.material = groundMat; 
+        ground.material = groundMat;
 
         var food = new Food(10);
 
         agents = []; // An array for all creatures
-        for (let i = 0; i < 30; i++) {
-          agents.push(new Agent(0,0,0,0));
+        for (let i = 0; i < 40; i++) {
+          agents.push(new Agent(0, 0, 0, 0,0,0,0));
         }
         // --- loop --------------------------------
         // Code in this function will run ~60 times per second
@@ -205,36 +215,63 @@
               foodPosition = food.getFoodPosition(j);
               let d = BABYLON.Vector2.Distance(agentPosition, foodPosition);
               if (d < agents[i].getRadius()) {
-                agents[i].health += 500;
+                agents[i].changeHealth(500);
+                agents[i].changeAlpha(0.5);
                 food.eatFood(j);
               }
             }
             // interacte with rest of agents
             for (let j = 0; j < agents.length; j++) {
-              if (i != j) {   // don't interacte with itself                
+              if (i != j) {
+                // don't interacte with itself
                 agent2Position = new BABYLON.Vector2(
                   agents[j].agentMesh.position.x,
                   agents[j].agentMesh.position.z
                 );
                 let d = BABYLON.Vector2.Distance(agentPosition, agent2Position);
-                if (d < agents[i].getRadius()) { // if they are close each other
-                  
-                  if(Math.abs(agents[i].getRadius()-agents[j].getRadius())<1.2){ // if they are similar in size they merge
-                    agents[i].decreaseHealth(5000);
-                    agents[j].decreaseHealth(5000);
-                    agents.push(new Agent(
-                      agents[i].agentMesh.position.x +agents[j].agentMesh.position.x ,                    
-                      agents[i].agentMesh.position.z +agents[j].agentMesh.position.z ,
-                      agents[i].getRadius(),
-                      agents[j].getRadius()));
-                  }else{  // if not: destroy depending on kinetic energy of each one
-                    if(agents[i].getRadius()*agents[i].getVelocity()*agents[i].getVelocity() <
-                      agents[j].getRadius()*agents[j].getVelocity()*agents[j].getVelocity() ){
-                        agents[i].decreaseHealth(5000);
-                      }else{
-                        agents[j].decreaseHealth(5000);
-                      }                    
-                  }                  
+                if (d < agents[i].getRadius()) {
+                  // if they are close each other
+
+                  if (
+                    Math.abs(agents[i].getRadius() - agents[j].getRadius()) < 1.5
+                  ) {
+                    // if they are similar in size they merge
+                    agents[i].changeHealth(-5000);
+                    agents[j].changeHealth(-5000);
+                    var colorR1=agents[i].getColorR();
+                    var colorG1=agents[i].getColorG();
+                    var colorB1=agents[i].getColorB();
+                    var colorR2=agents[j].getColorR();
+                    var colorG2=agents[j].getColorG();
+                    var colorB2=agents[j].getColorB();
+                    agents.push(
+                      new Agent(
+                        agents[i].agentMesh.position.x +
+                          agents[j].agentMesh.position.x,
+                        agents[i].agentMesh.position.z +
+                          agents[j].agentMesh.position.z,
+                        agents[i].getRadius(),
+                        agents[j].getRadius(),
+                        (colorR1+colorR2)/2,
+                        (colorG1+colorG2)/2,
+                        (colorB1+colorB2)/2
+                      )
+                    );
+                  } else {
+                    // if not: destroy depending on kinetic energy of each one
+                    if (
+                      agents[i].getRadius() *
+                        agents[i].getVelocity() *
+                        agents[i].getVelocity() <
+                      agents[j].getRadius() *
+                        agents[j].getVelocity() *
+                        agents[j].getVelocity()
+                    ) {
+                      agents[i].changeHealth(-5000);
+                    } else {
+                      agents[j].changeHealth(-5000);
+                    }
+                  }
                 }
               }
             }
