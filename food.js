@@ -12,10 +12,10 @@ class Food {
   constructor(num) {
     // Start with some food
     var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
-      myMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
-      myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
-      myMaterial.emissiveColor = new BABYLON.Color3(0.0, 0.58, 0.02);
-      myMaterial.ambientColor = new BABYLON.Color3(0.0, 0.58, 0.02);
+      myMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0);
+      //myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
+     // myMaterial.emissiveColor = new BABYLON.Color3(0.0, 0.58, 0.02);
+     // myMaterial.ambientColor = new BABYLON.Color3(0.0, 0.58, 0.02);
     this.food = [];
     for (let i = 0; i < num; i++) {
       this.foodMesh = BABYLON.Mesh.CreateBox("box", 2,scene);
@@ -31,10 +31,10 @@ class Food {
    addFood() {
     var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
 
-      myMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
-      myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
-      myMaterial.emissiveColor = new BABYLON.Color3(0.0, 0.58, 0.02);
-      myMaterial.ambientColor = new BABYLON.Color3(0.0, 0.58, 0.02);
+    myMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0);
+      //myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
+     // myMaterial.emissiveColor = new BABYLON.Color3(0.0, 0.58, 0.02);
+    //  myMaterial.ambientColor = new BABYLON.Color3(0.0, 0.58, 0.02);
     this.foodMesh =  BABYLON.Mesh.CreateBox("box", 2,scene);
     this.foodMesh.position.x= Math.random()*120-60;
     this.foodMesh.position.z= Math.random()*120-60;

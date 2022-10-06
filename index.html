@@ -89,23 +89,25 @@
         // This attaches the camera to the canvas
         camera.attachControl(canvas, true);
 
-        var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-        
- 	// Sky material
-	var skyboxMaterial = new BABYLON.SkyMaterial("skyMaterial", scene);
-    skyboxMaterial.backFaceCulling = false;
-	
+        var light = new BABYLON.HemisphericLight(
+          "light1",
+          new BABYLON.Vector3(0, 1, 0),
+          scene
+        );
+        light.intensity = 0.5;
+        // Sky material
+        var skyboxMaterial = new BABYLON.SkyMaterial("skyMaterial", scene);
+        skyboxMaterial.backFaceCulling = false;
 
-	// Sky mesh (box)
-    var skybox = BABYLON.Mesh.CreateBox("skyBox", 1000.0, scene);
-    skybox.material = skyboxMaterial;
-    skyboxMaterial.inclination =  -0.40;
-    skyboxMaterial.luminance =  0.6;
-    skyboxMaterial.turbidity =  80; 
-    skyboxMaterial.cameraOffset.y = 50; 
+        // Sky mesh (box)
+        var skybox = BABYLON.Mesh.CreateBox("skyBox", 1000.0, scene);
+        skybox.material = skyboxMaterial;
+        skyboxMaterial.inclination = -0.45;
+        skyboxMaterial.luminance = 0.5;
+        skyboxMaterial.turbidity = 40;
+        skyboxMaterial.cameraOffset.y = 50;
 
-	
-	/* 		
+        		
 	// Ground
 	var groundTexture = new BABYLON.Texture("./textures/sand.jpg", scene);
 	groundTexture.vScale = groundTexture.uScale = 4.0;
@@ -123,39 +125,43 @@
 	water.backFaceCulling = true;
 	water.bumpTexture = new BABYLON.Texture("./textures/waterbump.png", scene);
 	water.windForce = -5;
-	water.waveHeight = 0.4;
-	water.bumpHeight = 0.1;
-	water.waveLength = 0.1;
+	water.waveHeight = 0.05;
+	water.bumpHeight = 0.01;
+	water.waveLength = 0.05;
 	water.colorBlendFactor = 0;
 	water.addToRenderList(skybox);
 	water.addToRenderList(ground);
-	waterMesh.material = water; */
+	waterMesh.material = water; 
 
-
-
-         // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+        // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
         /* var light = new BABYLON.DirectionalLight(
           "DirectionalLight",
-          new BABYLON.Vector3(0.5, -0.5, 0.5),
+          new BABYLON.Vector3(0.5, -0.9, -0.5),
           scene
         );
         light.intensity = 0.4; */
-       /*  var light2 = new BABYLON.PointLight("light", new BABYLON.Vector3(-50, 5, -20), scene);
-	//light.diffuse = new BABYLON.Color3(1, 0, 0);
-	  light2.specular = new BABYLON.Color3(0, 1, 0);       
-        light2.intensity = 0.4;
+   /*       var light2 = new BABYLON.PointLight("light", new BABYLON.Vector3(-50, 5, -20), scene);
+	light2.diffuse = new BABYLON.Color3(1, 1, 1);
+	  //light2.specular = new BABYLON.Color3(0, 1, 0);       
+        light2.intensity = 0.3;
         var light3 = new BABYLON.PointLight("light", new BABYLON.Vector3(30, 5, 30), scene);
-	//light.diffuse = new BABYLON.Color3(1, 0, 0);
-	  light3.specular = new BABYLON.Color3(0, 1, 0);
+	light3.diffuse = new BABYLON.Color3(1, 1, 1);
+	  //light3.specular = new BABYLON.Color3(0, 1, 0);
         // Default intensity is 1. Let's dim the light a small amount
-        light3.intensity = 0.4; */
+        light3.intensity = 0.3;   */
 
         // Our built-in 'ground' shape.
         const groundSize = 150;
 
-         var groundMat = new BABYLON.StandardMaterial("groundMat", scene);
-        groundMat.ambientTexture = new BABYLON.Texture("textures/ceramic_14_basecolor-2K.png", scene);
-        groundMat.diffuseTexture = new BABYLON.Texture("textures/ceramic_14_basecolor-2K.png", scene);
+        /* var groundMat = new BABYLON.StandardMaterial("groundMat", scene);
+        groundMat.ambientTexture = new BABYLON.Texture(
+          "textures/ceramic_14_basecolor-2K.png",
+          scene
+        );
+        groundMat.diffuseTexture = new BABYLON.Texture(
+          "textures/ceramic_14_basecolor-2K.png",
+          scene
+        );
         groundMat.ambientTexture.uScale = 6.0;
         groundMat.ambientTexture.vScale = 6.0;
         groundMat.diffuseTexture.uScale = 6.0;
@@ -166,14 +172,13 @@
           { width: groundSize, height: groundSize },
           scene
         );
-        ground.material = groundMat; 
+        ground.material = groundMat; */
 
-
-        var food = new Food(50);
+        var food = new Food(10);
 
         agents = []; // An array for all creatures
-        for (let i = 0; i < 15; i++) {
-          agents.push(new Agent());
+        for (let i = 0; i < 30; i++) {
+          agents.push(new Agent(0,0,0,0));
         }
         // --- loop --------------------------------
         // Code in this function will run ~60 times per second
@@ -195,22 +200,51 @@
               agents[i].agentMesh.position.z
             );
 
-            // eat food 
+            // eat food
             for (let j = food.getFoodLength() - 1; j >= 0; j--) {
               foodPosition = food.getFoodPosition(j);
               let d = BABYLON.Vector2.Distance(agentPosition, foodPosition);
               if (d < agents[i].getRadius()) {
-                agents[i].health += 100;
+                agents[i].health += 500;
                 food.eatFood(j);
               }
             }
-            // -- end eat food
-            // Is dead??
-            if (agents[i].isDead()){
-              agents[i].agentMesh.dispose();
-              agents.splice(i,1);
+            // interacte with rest of agents
+            for (let j = 0; j < agents.length; j++) {
+              if (i != j) {   // don't interacte with itself                
+                agent2Position = new BABYLON.Vector2(
+                  agents[j].agentMesh.position.x,
+                  agents[j].agentMesh.position.z
+                );
+                let d = BABYLON.Vector2.Distance(agentPosition, agent2Position);
+                if (d < agents[i].getRadius()) { // if they are close each other
+                  
+                  if(Math.abs(agents[i].getRadius()-agents[j].getRadius())<1.2){ // if they are similar in size they merge
+                    agents[i].decreaseHealth(5000);
+                    agents[j].decreaseHealth(5000);
+                    agents.push(new Agent(
+                      agents[i].agentMesh.position.x +agents[j].agentMesh.position.x ,                    
+                      agents[i].agentMesh.position.z +agents[j].agentMesh.position.z ,
+                      agents[i].getRadius(),
+                      agents[j].getRadius()));
+                  }else{  // if not: destroy depending on kinetic energy of each one
+                    if(agents[i].getRadius()*agents[i].getVelocity()*agents[i].getVelocity() <
+                      agents[j].getRadius()*agents[j].getVelocity()*agents[j].getVelocity() ){
+                        agents[i].decreaseHealth(5000);
+                      }else{
+                        agents[j].decreaseHealth(5000);
+                      }                    
+                  }                  
+                }
+              }
             }
 
+            // -- end eat food
+            // Is dead??
+            if (agents[i].isDead()) {
+              agents[i].agentMesh.dispose();
+              agents.splice(i, 1);
+            }
           }
         });
         // -------------------------
