@@ -17,6 +17,6 @@ Las criaturas interactúan entre sí cuando chocan:
 Source code and assets in: https://github.com/juandrh/Ecosystem
 
 Main sources:
-- The Nature of Code by DANIEL SHIFFMAN: https://natureofcode.com/ Unreal Engine Documentation: https://docs.unrealengine.com/5.0/en-US/
+- The Nature of Code by DANIEL SHIFFMAN: https://natureofcode.com/ 
 - Babylon.js: https://www.babylonjs.com/
 - Perlin Noise by: https://github.com/josephg/noisejs
