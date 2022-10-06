@@ -108,7 +108,7 @@
         skyboxMaterial.cameraOffset.y = 50;
 
         		
-	// Ground
+	/* // Ground
 	var groundTexture = new BABYLON.Texture("./textures/sand.jpg", scene);
 	groundTexture.vScale = groundTexture.uScale = 4.0;
 	
@@ -131,7 +131,7 @@
 	water.colorBlendFactor = 0;
 	water.addToRenderList(skybox);
 	water.addToRenderList(ground);
-	waterMesh.material = water; 
+	waterMesh.material = water;  */
 
         // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
         /* var light = new BABYLON.DirectionalLight(
@@ -153,7 +153,7 @@
         // Our built-in 'ground' shape.
         const groundSize = 150;
 
-        /* var groundMat = new BABYLON.StandardMaterial("groundMat", scene);
+         var groundMat = new BABYLON.StandardMaterial("groundMat", scene);
         groundMat.ambientTexture = new BABYLON.Texture(
           "textures/ceramic_14_basecolor-2K.png",
           scene
@@ -172,7 +172,7 @@
           { width: groundSize, height: groundSize },
           scene
         );
-        ground.material = groundMat; */
+        ground.material = groundMat; 
 
         var food = new Food(10);
 
